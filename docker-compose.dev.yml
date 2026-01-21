@@ -1,0 +1,23 @@
+services:
+  reverse-proxy:
+    image: traefik:v3.6
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.http.routers.traefik.rule=Host(`traefik.nextjs.localhost`)"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+
+  frontend:
+    labels:
+      - "traefik.http.routers.frontend.rule=Host(`frontend.nextjs.localhost`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_APP_ENV: development

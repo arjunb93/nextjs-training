@@ -1,0 +1,7 @@
+services:
+  frontend:
+    image: node:24-alpine
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    volumes:
+      - ./frontend:/app:delegated
